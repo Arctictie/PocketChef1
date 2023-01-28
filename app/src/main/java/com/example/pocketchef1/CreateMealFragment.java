@@ -1,12 +1,16 @@
 package com.example.pocketchef1;
 
+import static com.google.android.gms.tasks.Tasks.await;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,36 +18,55 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CreateMealFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreateMealFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class CreateMealFragment extends Fragment implements AdapterView.OnItemClickListener  {
 
     public static final String[] mealListNames = new String[]{
-            "Default"
+            "Default 1", "Default 2"
     };
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
     // TODO: Rename and change types of parameters
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser userAuth;
+    //private DocumentReference defaultMealsRef = db.document("defaultMeals/defaultlist/DefaultMeals");
+    private CollectionReference mealsColRef = db.collection("defaultMeals/defaultlist/DefaultMeals");
     private FirebaseAuth mAuth;
-    private ArrayList<mealItem> mealArrayList;
+    public static ArrayList<mealItem> mealArrayList;
+    private static final String KEY_MEAL_NAME ="meal_name";
+    private static final String KEY_DESCRIPTION ="description";
     private String[] mealTitles;
+    private static final String TAG = "MainActivity";
     private String[] mealDescriptions;
     private String itemSelected;
     private ArrayAdapter<String> adapter;
-    private RecyclerView recyclerView;
+    private static RecyclerView recyclerView;
+    public  AutoCompleteTextView textEdit;
+    populateMealList listCallback;
+    public View passedView;
+    public static Bundle passedSavedInstanceState;
 
     public CreateMealFragment() {
         // Required empty public constructor
@@ -75,6 +98,10 @@ public class CreateMealFragment extends Fragment implements AdapterView.OnItemCl
         }
     }
 
+    public interface populateMealList {
+        void onCallback(ArrayList<mealItem> item);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,65 +111,116 @@ public class CreateMealFragment extends Fragment implements AdapterView.OnItemCl
 
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        itemSelected = "Default 1";
         super.onViewCreated(view, savedInstanceState);
-        AutoCompleteTextView textEdit = requireView().findViewById(R.id.meal_search);
-
+        passedView = view;
+        passedSavedInstanceState =savedInstanceState;
+        textEdit = requireView().findViewById(R.id.meal_search);
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_activated_1, mealListNames);
-        textEdit.setText(adapter.getItem(0), false);
+        textEdit.setText(adapter.getItem(0), true);
         textEdit.setAdapter(adapter);
         textEdit.setOnItemClickListener((AdapterView.OnItemClickListener) this);
-        initialiseMealData();
 
-        recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setHasFixedSize(true);
-        mealViewAdapter mealViewAdapter = new mealViewAdapter(getContext(), mealArrayList);
-        recyclerView.setAdapter(mealViewAdapter);
-        mealViewAdapter.notifyDataSetChanged();
+        initialiseMealData(new populateMealList() {
+            @Override
+            public void onCallback(ArrayList<mealItem> item) {
+                updateRecyclerView();
+            }
+        });
+
+
 
 
     }
+    private void updateRecyclerView()
+    {
+        try {
+            {
+                textEdit.setAdapter(adapter);
+                recyclerView = passedView.findViewById(R.id.recyclerView);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                recyclerView.setHasFixedSize(true);
+                mealViewAdapter mealViewAdapter = new mealViewAdapter(requireContext(), mealArrayList);
+                recyclerView.setAdapter(mealViewAdapter);
+                mealViewAdapter.notifyDataSetChanged();
+            }
+        }
+        catch (Exception e)
+        {
+            Log.w("updateRecyclerView", "couldnt update recycler view",e);
+        }
 
+    }
+    private void  initialiseMealData (final populateMealList listCallback ) {
 
-    private void initialiseMealData() {
         mealArrayList = new ArrayList<>();
+        try {
+            System.out.println("called");
+            System.out.println(itemSelected);
+            if (Objects.equals(itemSelected, "Default 1")) {
 
-        if (itemSelected == "Default") {
+                mealsColRef.get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
+                                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                    mealItem dfMealItem = documentSnapshot.toObject(mealItem.class);
+
+                                    mealArrayList.add(dfMealItem);
+
+                                    System.out.println(dfMealItem.getMeal_name());
+                                    // Log.d(TAG, "meal item : ",dfMealItem.getMealTitle());
+
+
+                                }
+                                listCallback.onCallback(mealArrayList);
+                                System.out.println(mealArrayList.size());
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "could not initialise data ");
+                            }
+                        });
+                // }
+            }
+            else
+            {
+                mealArrayList.clear();
+                listCallback.onCallback(mealArrayList);
+            }
         }
-        mealTitles = new String[]{
-                "title1",
-                "title2",
-                "title3",
-                "title4",
-                "title5",
-                "title6",
-                "title7"
 
-        };
-        mealDescriptions = new String[]{
-                "meal 1 description here",
-                "meal 2 description here",
-                "meal 3 description here",
-                "meal 4 description here",
-                "meal 5 description here",
-                "meal 6 description here",
-                "meal 7 description here",
-
-        };
-        for (int i = 0; i < mealTitles.length; i++) {
-            mealItem mealItem = new mealItem(mealTitles[i], mealDescriptions[i]);
-            mealArrayList.add(mealItem);
-
+        catch (Exception e)
+        {
+            Log.e(TAG, "could not run code in item selected ",e);
         }
+
+
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        itemSelected = adapter.getItem(i);
-    }
+      @Override
+      public void onItemClick (AdapterView < ? > adapterView, View view,int i, long l){
+          itemSelected = adapter.getItem(i);
+          System.out.println(itemSelected);
+
+
+          initialiseMealData(new populateMealList() {
+              @Override
+              public void onCallback(ArrayList<mealItem> item) {
+                  updateRecyclerView();
+              }
+
+          });
+
+
+
+      }
+  }
 
     // On resume could be used!
-}
+

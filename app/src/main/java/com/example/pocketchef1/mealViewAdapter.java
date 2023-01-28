@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class mealViewAdapter extends RecyclerView.Adapter<mealViewAdapter.mealViewHolder> {
-    Context context;
+     Context context;
     ArrayList<mealItem> mealsList;
 
     public mealViewAdapter(Context context, ArrayList<mealItem> mealsList) {
@@ -32,8 +32,8 @@ public class mealViewAdapter extends RecyclerView.Adapter<mealViewAdapter.mealVi
     public void onBindViewHolder(@NonNull mealViewHolder holder, int position) {
         mealItem mealitem = mealsList.get(position);
 
-        holder.mealTitle.setText(mealitem.Title);
-        holder.mealDescription.setText(mealitem.description);
+        holder.mealTitle.setText(mealitem.getMeal_name());
+        holder.mealDescription.setText(mealitem.getDescription());
     }
 
     @Override
@@ -56,17 +56,7 @@ public class mealViewAdapter extends RecyclerView.Adapter<mealViewAdapter.mealVi
     }
 }
 
-class mealItem {
-    String Title;
-    String description;
 
-    public mealItem(String Title, String description) {
-        this.Title = Title;
-        this.description = description;
-    }
-
-
-}
 
 
 //public static class mealViewHolder extends RecyclerView.ViewHolder{

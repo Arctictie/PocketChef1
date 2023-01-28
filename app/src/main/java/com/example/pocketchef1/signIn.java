@@ -40,34 +40,40 @@ public class signIn extends AppCompatActivity {
 
 
     public void signIn(String email, String password) {
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
+        try {
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
 
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(signIn.this, "Authentication success. Use an intent to move to a new activity",
-                                    Toast.LENGTH_SHORT).show();
-                            try {
-                                Intent i = new Intent(getApplicationContext(), homePage.class);
-                                startActivity(i);
-                            } catch (Exception e) {
-                                Log.w("Signin", "log in intent move failure", e);
-                                Toast.makeText(signIn.this, "intent failed.",
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                Toast.makeText(signIn.this, "Authentication success. Use an intent to move to a new activity",
+                                        Toast.LENGTH_SHORT).show();
+                                try {
+                                    Intent i = new Intent(getApplicationContext(), homePage.class);
+                                    startActivity(i);
+                                } catch (Exception e) {
+                                    Log.w("Signin", "log in intent move failure", e);
+                                    Toast.makeText(signIn.this, "intent failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+
+                            } else {
+// If sign in fails, display a message to the user.
+                                Log.w("signIn", "signInWithEmail:failure",
+                                        task.getException());
+                                Toast.makeText(signIn.this, "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
                             }
-
-
-                        } else {
-// If sign in fails, display a message to the user.
-                            Log.w("signIn", "signInWithEmail:failure",
-                                    task.getException());
-                            Toast.makeText(signIn.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
+                    });
+        }catch (Exception e )
+        {
+
+        }
+
 
 
     }
