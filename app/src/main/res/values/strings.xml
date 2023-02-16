@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
-    <resources>
+<resources>
     <string name="app_name">PocketChef</string>
-    <string name="title_activity_signin"/>
+    <string name="title_activity_signin" />
     <string name="title_activity_home_page">homePage</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -22,5 +22,19 @@
     <string name="delete_meal">Delete Meal</string>
     <string name="meal_title">Title:</string>
     <string name="meal_description">Description:</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="Meals">Meals</string>
+    <string name="add_title">Add Title</string>
+    <string name="add_description">Add Description</string>
+    <string name="description">Description</string>
+    <string name="instructions">Instructions</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="create_account">Create Account</string>
+    <string name="sign_up">Sign up</string>
+    <string name="title">Title</string>
+    <string name="add_instructions">Add Instructions</string>
+    <string name="add_ingredients">Add Ingredients</string>
+    <string name="add_image">Add Image</string>
 
 </resources>

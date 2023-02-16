@@ -82,12 +82,16 @@ public class MainActivity extends AppCompatActivity {
                                     Boolean createdMeals = false;
                                     user.put(KEY_EMAIL, email);
                                     user.put(KEY_CREATED_MEALS, createdMeals);
+
                                     db.collection("users").document(String.valueOf(userAuth.getUid()))
                                             .set(user)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
                                                     Toast.makeText(MainActivity.this, "added user  to database", Toast.LENGTH_SHORT).show();
+                                                    UID = userAuth.getUid();
+                                                    Intent i = new Intent(getApplicationContext(), homePage.class);
+                                                    i.putExtra("uid",UID);
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -97,12 +101,13 @@ public class MainActivity extends AppCompatActivity {
                                                 }
                                             });
                                     assert userAuth != null;
-                                    UID = userAuth.getUid();
+
 
                                     Toast.makeText(MainActivity.this,
                                             "Authentication success. Use an intent to move to a new activity",
                                             Toast.LENGTH_SHORT).show();
                                     Intent i = new Intent(getApplicationContext(), homePage.class);
+                                    i.putExtra("uid",UID);
                                     startActivity(i);
 
 
@@ -152,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void signupClicked(View view) {
         try {
-            EditText email = findViewById(R.id.editTextTextEmailAddress);
-            EditText password = findViewById(R.id.editTextTextPassword);
+            EditText email = findViewById(R.id.signupEmail);
+            EditText password = findViewById(R.id.signupPassword);
             String sEmail = email.getText().toString();
             String sPassword = password.getText().toString();
 

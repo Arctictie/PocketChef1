@@ -4,16 +4,77 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/darkblue"
     tools:context=".signIn">
 
-    <EditText
-        android:id="@+id/editTextTextEmailAddress"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="267dp"
+        android:layout_height="260dp"
+        android:background="@drawable/launcher_shape_2"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.26">
+
+        <EditText
+
+            android:id="@+id/signInEmail"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:ellipsize="start"
+            android:ems="10"
+            android:gravity="center_horizontal"
+            android:hint="@string/enter_username"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/white"
+            android:textColorHint="@drawable/selector" />
+
+        <EditText
+
+            android:id="@+id/signInPassword"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="80dp"
+            android:ellipsize="start"
+            android:ems="10"
+            android:gravity="center_horizontal"
+            android:hint="@string/enter_password"
+            android:inputType="textPassword"
+            android:textColorHint="@drawable/selector" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="49dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/ic_baseline_arrow_back_24"
+        style="@style/ShapeAppearanceOverlay.Material3.Button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="110dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
+        android:layout_marginTop="112dp"
+        android:fontFamily="@font/bookman_os_bold"
+        android:text="Sign In"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@drawable/title_box"
+        android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,23 +84,13 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/bookman_os_bold"
         android:onClick="signinButtonClicked"
-        android:shadowColor="@color/banana_yellow"
         android:text="@string/sign_in"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/editTextTextPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        android:layout_marginEnd="1dp"
-        android:ems="10"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextEmailAddress"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.377" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

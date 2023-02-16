@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class signIn extends AppCompatActivity {
     private FirebaseAuth mAuth;
-
+    String UID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +48,12 @@ public class signIn extends AppCompatActivity {
                             if (task.isSuccessful()) {
 
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                UID = user.getUid();
                                 Toast.makeText(signIn.this, "Authentication success. Use an intent to move to a new activity",
                                         Toast.LENGTH_SHORT).show();
                                 try {
                                     Intent i = new Intent(getApplicationContext(), homePage.class);
+                                    i.putExtra("uid",UID);
                                     startActivity(i);
                                 } catch (Exception e) {
                                     Log.w("Signin", "log in intent move failure", e);
@@ -80,8 +82,8 @@ public class signIn extends AppCompatActivity {
 
     public void signinButtonClicked(View view) {
         try {
-            EditText email = findViewById(R.id.editTextTextEmailAddress);
-            EditText password = findViewById(R.id.editTextTextPassword);
+            EditText email = findViewById(R.id.signInEmail);
+            EditText password = findViewById(R.id.signInPassword);
             String sEmail = email.getText().toString();
             String sPassword = password.getText().toString();
             signIn(sEmail, sPassword);

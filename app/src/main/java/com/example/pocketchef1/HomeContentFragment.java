@@ -1,6 +1,7 @@
 package com.example.pocketchef1;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,5 +60,23 @@ public class HomeContentFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home_content, container, false);
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+    }
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outstate)
+    {
+        super.onSaveInstanceState(outstate);
+
     }
 }
