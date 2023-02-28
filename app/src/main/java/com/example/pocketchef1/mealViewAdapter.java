@@ -34,6 +34,8 @@ public class mealViewAdapter extends RecyclerView.Adapter<mealViewAdapter.mealVi
 
         holder.mealTitle.setText(mealitem.getMeal_name());
         holder.mealDescription.setText(mealitem.getDescription());
+        holder.instructions.setText((mealitem.getInstructions()));
+        holder.ingredients.setText((mealitem.getIngredients()));
     }
 
     @Override
@@ -44,13 +46,18 @@ public class mealViewAdapter extends RecyclerView.Adapter<mealViewAdapter.mealVi
     public static class mealViewHolder extends RecyclerView.ViewHolder {
         TextView mealTitle;
         TextView mealDescription;
+        TextView instructions;
+        TextView ingredients;
         ImageView mealImage;
+
 
         public mealViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mealTitle = itemView.findViewById(R.id.mealTitle);
             mealDescription = itemView.findViewById(R.id.mealDescription);
+            ingredients = itemView.findViewById(R.id.ingredients);
+            instructions = itemView.findViewById(R.id.instructions);
             mealImage = itemView.findViewById(R.id.mealImg);
         }
     }

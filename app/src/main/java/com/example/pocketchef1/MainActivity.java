@@ -19,22 +19,29 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String KEY_MEAL_NAME ="meal_name";
     private static final String KEY_DESCRIPTION ="description";
+    private static final String KEY_INSTRUCTIONS ="instructions";
+    private static final String KEY_INGREDIENTS ="ingredients";
     private static final String KEY_EMAIL = "Email";
     private static final String KEY_CREATED_MEALS = "created_meals";
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private  CollectionReference userMealListRef;
     FirebaseUser userAuth;
     FirebaseAuth mAuth;
     private String encrypedEmail;
@@ -79,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                                     userAuth = mAuth.getCurrentUser();
                                      userAuth = FirebaseAuth.getInstance().getCurrentUser();
                                     Map<String, Object> user = new HashMap<>();
+
                                     Boolean createdMeals = false;
                                     user.put(KEY_EMAIL, email);
                                     user.put(KEY_CREATED_MEALS, createdMeals);
@@ -89,15 +97,51 @@ public class MainActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onSuccess(Void unused) {
                                                     Toast.makeText(MainActivity.this, "added user  to database", Toast.LENGTH_SHORT).show();
-                                                    UID = userAuth.getUid();
                                                     Intent i = new Intent(getApplicationContext(), homePage.class);
-                                                    i.putExtra("uid",UID);
+
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     Toast.makeText(MainActivity.this, "Failed to add user to database", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+
+                                    userMealListRef = db.collection("users/"+userAuth.getUid()+"/root/userLists/list1");
+                                    //Map<String, Object> meal = new HashMap<>();
+                                    Map<String, Object> mealItem = new HashMap<>();
+
+                                    mealItem.put(KEY_MEAL_NAME,"Chicken curry");
+                                    mealItem.put(KEY_DESCRIPTION,"test");
+                                    mealItem.put(KEY_INSTRUCTIONS,"test");
+                                    mealItem.put(KEY_INGREDIENTS,"test");
+
+                                   // meal.put("mealArray",Arrays.asList(mealItem));
+                                   // String list1 ="list1";
+                                    ArrayList<String> listNames = new ArrayList<>();
+                                    listNames.add("list1");
+                                    Map<String, Object> mealListMap = new HashMap<>();
+                                    mealListMap.put("listNames",listNames);
+                                    db.document("users/"+userAuth.getUid()+"/root/userListNames")
+                                                    .set(mealListMap);
+
+
+                                    userMealListRef.document("testMeal1")
+                                            .set(mealItem)
+
+
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Toast.makeText(MainActivity.this, "added user list dir", Toast.LENGTH_SHORT).show();
+
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(MainActivity.this, "Failed to add user lists", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                     assert userAuth != null;
@@ -121,7 +165,10 @@ public class MainActivity extends AppCompatActivity {
                                             Toast.LENGTH_SHORT).show();
                                 }
 
+
                             }
+
+
 
 
                         });
@@ -131,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void createUserDir(String sEmail) {
+
+
         Map<String, Object> user = new HashMap<>();
         Boolean createdMeals = false;
         user.put(KEY_EMAIL, sEmail);
@@ -150,7 +199,15 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Failed to add user to database", Toast.LENGTH_SHORT).show();
                     }
                 });
+        addUserListDir();
 
+
+
+
+    }
+
+    public void addUserListDir()
+    {
 
     }
 
@@ -205,13 +262,64 @@ public class MainActivity extends AppCompatActivity {
                 , "Rustle up our easy vegetarian chilli. It's a great recipe for batch-cooking – you can easily double it if you have a pan big enough, and freeze the rest"
                 , "Enjoy oven-baked pork chops cooked in a honey and wholegrain mustard glaze with new potatoes for a deliciously easy dinner, just add your favourite veg"};
 
+        String[] mealInstructions = { " Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type"
+                ," Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type"
+                ," Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type"
+                ," Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type"
+                ," Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type"
+                ," Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type"};
+
+        String[] mealIngredients ={"Sage " +
+                                   "Potatoes" +
+                                   "Mince" +
+                                   "Onion"+
+                                   "Garlic"+
+                                   "cheddar"+
+                "Green Beans",
+                "Sage " +
+                        "Potatoes" +
+                        "Mince" +
+                        "Onion"+
+                        "Garlic"+
+                        "cheddar"+
+                        "Green Beans",
+                "Sage " +
+                        "Potatoes" +
+                        "Mince" +
+                        "Onion"+
+                        "Garlic"+
+                        "cheddar"+
+                        "Green Beans",
+                "Sage " +
+                        "Potatoes" +
+                        "Mince" +
+                        "Onion"+
+                        "Garlic"+
+                        "cheddar"+
+                        "Green Beans",
+                "Sage " +
+                        "Potatoes" +
+                        "Mince" +
+                        "Onion"+
+                        "Garlic"+
+                        "cheddar"+
+                        "Green Beans",
+                "Sage " +
+                        "Potatoes" +
+                        "Mince" +
+                        "Onion"+
+                        "Garlic"+
+                        "cheddar"+
+                        "Green Beans"};
         for (int i =0 ;i < mealNames.length; i++) {
 
             Map<String, Object> meal = new HashMap<>();
             meal.put(KEY_MEAL_NAME, mealNames[i]);
             meal.put(KEY_DESCRIPTION, mealDescriptions[i]);
-
-            db.collection("defaultMeals").document("defaultlist").collection("DefaultMeals").document(mealNames[i])
+            meal.put(KEY_INSTRUCTIONS,mealInstructions[i]);
+            meal.put(KEY_INGREDIENTS,mealInstructions[i]);
+            userAuth= FirebaseAuth.getInstance().getCurrentUser();
+            db.collection("users/"+userAuth.getUid()+"/root/" +"userLists"+"/"+"list1").document(mealNames[i])
                     .set(meal);
         }
 

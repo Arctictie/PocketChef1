@@ -49,6 +49,7 @@ public class signIn extends AppCompatActivity {
 
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 UID = user.getUid();
+                                System.out.println("UID in sign in =" +UID);
                                 Toast.makeText(signIn.this, "Authentication success. Use an intent to move to a new activity",
                                         Toast.LENGTH_SHORT).show();
                                 try {

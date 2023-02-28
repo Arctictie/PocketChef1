@@ -36,5 +36,6 @@
     <string name="add_instructions">Add Instructions</string>
     <string name="add_ingredients">Add Ingredients</string>
     <string name="add_image">Add Image</string>
-
+    <string name="add">+</string>
+    <string name="remove">-</string>
 </resources>

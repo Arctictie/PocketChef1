@@ -1,60 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="8dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/mealImg"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:contentDescription="@string/app_name"
-            android:scaleType="centerInside"></ImageView>
-
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView17"
+            app:layout_constraintVertical_bias="1.0">
+
+            <TextView
+                android:id="@+id/ingredients"
+                android:layout_width="200dp"
+                android:layout_height="149dp"
+                android:textSize="11sp"
+                android:background="@drawable/title_box_black"
+                android:text="@string/ingredients" />
+
+            <TextView
+                android:id="@+id/instructions"
+                android:layout_width="200dp"
+                android:textSize="11sp"
+                android:layout_height="149dp"
+                android:background="@drawable/title_box_black"
+                android:text="@string/instructions" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="75dp"
+            android:layout_height="20dp"
+            android:text="@string/instructions"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.22"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.464" />
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="75dp"
+            android:layout_height="20dp"
+            android:text="@string/ingredients"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.72"
+            app:layout_constraintStart_toEndOf="@+id/textView17"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.464" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/mealImg"
+                android:layout_width="152dp"
+                android:layout_height="130dp"
+                android:contentDescription="@string/app_name"
+                android:foreground="@drawable/title_box_black"
+                android:scaleType="centerInside"></ImageView>
+
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/mealTitle"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/meal_title">
+                    android:orientation="horizontal">
 
-                </TextView>
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/mealTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/meal_title">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                    </TextView>
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/mealDescription"
+                    android:id="@+id/textView11"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/meal_description">
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:text="@string/description" />
 
-                </TextView>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/mealDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="11sp"
+                        android:background="@drawable/title_box_black"
+                        android:paddingTop="1dp"
+                        android:text="@string/meal_description">
+
+
+                    </TextView>
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.cardview.widget.CardView>

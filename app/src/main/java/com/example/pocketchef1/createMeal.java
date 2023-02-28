@@ -1,58 +1,217 @@
 package com.example.pocketchef1;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
-public class createMeal extends AppCompatActivity {
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+public class createMeal extends AppCompatActivity  {
     private static final int pic_id = 101;
     private static final int permissionRequest = 100;
     Button  addImageBtnID;
+    Button  createList;
+    Button  removeList;
     ImageView  mealImageID;
+    FirebaseUser userAuth;
+    FirebaseAuth mAuth;
+    private Uri imageUri;
+    private DocumentReference userListNamesRef;
+    String listText;
+    public String selectedList;
+    public AutoCompleteTextView cmTextEdit;
+    public static ArrayList<String> mealListNames = new ArrayList<String>();
+    mealListNames meaListObj = new mealListNames();
+    ActivityResultLauncher<Intent> activityResultLauncher;
+
+
+
+
+    private ArrayAdapter<String> adapter = null;
+
+
+    public static  firebaseFunctions firebaseFunctions;
+
+    public interface getMealData {
+        void onCallback(mealListNames mealLists);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        userAuth = mAuth.getCurrentUser();
+
+        userListNamesRef = db.document("users/"+userAuth.getUid()+"/root/userListNames");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_meal);
 
+        cmTextEdit = findViewById(R.id.cm_meal_search);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            cmTextEdit.setForeground(null);
+        }
 
+        firebaseFunctions = new firebaseFunctions();
+        getLists();
+
+
+       // populateList();
         // By ID we can get each component which id is assigned in XML file get Buttons and imageview.
         addImageBtnID = findViewById(R.id.addMealImage);
         mealImageID = findViewById(R.id.mealImage);
+
+        createList = findViewById(R.id.createList);
+        removeList = findViewById(R.id.removeList);
+
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if(result.getResultCode() == Activity.RESULT_OK) {
+                    Bundle extras = result.getData().getExtras();
+                    Bitmap photo = (Bitmap) extras.get("data");
+                    WeakReference<Bitmap> res = new WeakReference<>(Bitmap.createScaledBitmap(photo,
+                            photo.getHeight(), photo.getWidth(), false).copy(
+                            Bitmap.Config.RGB_565, true));
+                    Bitmap photoClear = res.get();
+
+                    imageUri = bitmapToUri(photo, createMeal.this);
+                    loadImage();
+
+                }
+                else
+                {
+                    Log.d("createMeal" , "result from taking picture not valid.");
+                }
+            }
+
+        });
+
         // Camera_open button is for open the camera and add the setOnClickListener in this button
+        createList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String listText = cmTextEdit.getText().toString();
+
+                firebaseFunctions.fbAddMealList(listText);
+                getLists();
+            }
+        });
+        removeList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listText = cmTextEdit.getText().toString();
+                firebaseFunctions.fbRemoveMealList(listText);
+                getLists();
+            }
+        });
 
         addImageBtnID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                listText = cmTextEdit.getText().toString();
                 System.out.println("hello");
+
                 checkPermissions();
+
+            }
+        });
+        this.cmTextEdit.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("CreateMeal","on item click textEdit (meals)");
+                selectedList = adapter.getItem(position);
+
             }
         });
 
+
+    }
+    private void loadImage()
+    {
+        mealImageID.setRotation(90);
+        Picasso.with(this).load(imageUri).into(mealImageID);
+    }
+    private void getLists()
+    {
+        mealListNames.clear();
+        userListNamesRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                meaListObj = documentSnapshot.toObject(mealListNames.class);
+                System.out.println(meaListObj.getListNames());
+                 mealListNames.addAll(meaListObj.getListNames());
+                 populateList();
+
+            }
+
+        });
+    }
+    private void populateList()
+    {
+       System.out.println("meal list names !"+meaListObj.getListNames());
+        adapter =new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mealListNames);
+        cmTextEdit.setAdapter(adapter);
+
+        cmTextEdit.setText(adapter.getItem(0), false);
     }
 
     private void checkPermissions()
     {
-        if(checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, permissionRequest);
-            System.out.println("hello2");
-        }
-        else
-        {
-            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(cameraIntent, pic_id);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, permissionRequest);
+                System.out.println("hello2");
+            }
+            else
+            {
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+               openCamera(cameraIntent);
+            }
         }
     }
 
@@ -65,11 +224,12 @@ public class createMeal extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == permissionRequest)
         {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, pic_id);
+
+                //cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                openCamera(cameraIntent);
             }
             else
             {
@@ -78,12 +238,49 @@ public class createMeal extends AppCompatActivity {
         }
     }
 
-    @Override
+    public void openCamera(Intent cameraIntent)
+    {
+        activityResultLauncher.launch(cameraIntent);
+
+    }
+
+
+   /* @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == pic_id && resultCode == Activity.RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
-            mealImageID.setImageBitmap(photo);
+            //imageUri = data.getData();
+            //imageUri = Utils.getUri(this, photo);
+
+            //mealImageID.setImageBitmap(photo);
+           // mealImageID.setRotation(90);
         }
+    }*/
+
+    private Uri bitmapToUri(Bitmap mealImage, createMeal context) {
+        File tempImage = new File(context.getCacheDir(),"images");
+        Uri tempUri = null;
+
+        try{
+            tempImage.mkdir();
+            File file = new File(tempImage,"temp_image.jpg");
+            FileOutputStream  stream = new FileOutputStream(file);
+            mealImage.compress(Bitmap.CompressFormat.JPEG,100,stream);
+            stream.flush();
+            stream.close();
+            tempUri = FileProvider.getUriForFile(context.getApplicationContext(),"com.example.pocketchef1"+".provider",file);
+        }
+        catch (FileNotFoundException e)
+        {
+            Log.e("createMeal","Could not convert bitmap to uri",e);
+        }
+        catch (IOException e)
+        {
+            Log.e("createMeal","TempFile save issue",e);
+        }
+        return tempUri;
     }
+
+
 }
