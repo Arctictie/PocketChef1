@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,8 +28,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,16 +59,24 @@ public class createMeal extends AppCompatActivity  {
     Button  addImageBtnID;
     Button  createList;
     Button  removeList;
+    Button  createMealBtn;
     ImageView  mealImageID;
+    TextView title;
+    TextView description;
+    TextView instructions;
+    ImageButton back;
+    TextView ingredients;
     FirebaseUser userAuth;
     FirebaseAuth mAuth;
     private Uri imageUri;
     private DocumentReference userListNamesRef;
     String listText;
+    Matrix matrix = new Matrix();
     public String selectedList;
+    mealItem  cMealItem = new mealItem();
     public AutoCompleteTextView cmTextEdit;
     public static ArrayList<String> mealListNames = new ArrayList<String>();
-    mealListNames meaListObj = new mealListNames();
+    mealListNames meaListObj;
     ActivityResultLauncher<Intent> activityResultLauncher;
 
 
@@ -100,19 +111,29 @@ public class createMeal extends AppCompatActivity  {
 
 
        // populateList();
-        // By ID we can get each component which id is assigned in XML file get Buttons and imageview.
+
         addImageBtnID = findViewById(R.id.addMealImage);
         mealImageID = findViewById(R.id.mealImage);
-
+        back = findViewById(R.id.cmBack);
+        createMealBtn = findViewById(R.id.createCompletedMealBtn);
         createList = findViewById(R.id.createList);
         removeList = findViewById(R.id.removeList);
+        title = findViewById(R.id.createMealTitle);
+        description = findViewById(R.id.createMealDescription);
+        instructions = findViewById(R.id.createMealInstructions);
+        ingredients = findViewById((R.id.createMealIngredients));
+
 
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
                 if(result.getResultCode() == Activity.RESULT_OK) {
+                    matrix.postRotate(90);
+
                     Bundle extras = result.getData().getExtras();
-                    Bitmap photo = (Bitmap) extras.get("data");
+                    Bitmap input = (Bitmap) extras.get("data");
+                    Bitmap scale = Bitmap.createScaledBitmap(input,input.getWidth(),input.getHeight(),true);
+                    Bitmap photo = Bitmap.createBitmap(scale,0,0,scale.getWidth(),scale.getHeight(),matrix,true);
                     WeakReference<Bitmap> res = new WeakReference<>(Bitmap.createScaledBitmap(photo,
                             photo.getHeight(), photo.getWidth(), false).copy(
                             Bitmap.Config.RGB_565, true));
@@ -128,6 +149,34 @@ public class createMeal extends AppCompatActivity  {
                 }
             }
 
+        });
+        createMealBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String sTitle = title.getText().toString();
+                String sDescription = description.getText().toString();
+                String sIngredients = ingredients.getText().toString();
+                String sInstructions = instructions.getText().toString();
+
+                if (imageUri != null && sTitle.length() > 3 && sDescription.length() > 10 && sInstructions.length() > 10 && sIngredients.length() > 10) {
+                    cMealItem = new mealItem(sTitle, sDescription, sIngredients, sInstructions);
+
+                    if (selectedList == null) {selectedList = adapter.getItem(0);
+                    }
+                    firebaseFunctions.addMeal(selectedList, cMealItem, imageUri);
+                    onBackPressed();
+                }
+                else{
+                    Toast.makeText(createMeal.this, "Add all details before creating meal", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
         });
 
         // Camera_open button is for open the camera and add the setOnClickListener in this button
@@ -172,7 +221,7 @@ public class createMeal extends AppCompatActivity  {
     }
     private void loadImage()
     {
-        mealImageID.setRotation(90);
+       // mealImageID.setRotation(90);
         Picasso.with(this).load(imageUri).into(mealImageID);
     }
     private void getLists()
@@ -266,7 +315,7 @@ public class createMeal extends AppCompatActivity  {
             tempImage.mkdir();
             File file = new File(tempImage,"temp_image.jpg");
             FileOutputStream  stream = new FileOutputStream(file);
-            mealImage.compress(Bitmap.CompressFormat.JPEG,100,stream);
+            mealImage.compress(Bitmap.CompressFormat.JPEG,75,stream);
             stream.flush();
             stream.close();
             tempUri = FileProvider.getUriForFile(context.getApplicationContext(),"com.example.pocketchef1"+".provider",file);
@@ -280,6 +329,12 @@ public class createMeal extends AppCompatActivity  {
             Log.e("createMeal","TempFile save issue",e);
         }
         return tempUri;
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
     }
 
 

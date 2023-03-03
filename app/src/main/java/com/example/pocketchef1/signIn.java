@@ -24,7 +24,12 @@ public class signIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+
         mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() != null)
+        {
+            mAuth.signOut();
+        }
     }
 
 
@@ -40,6 +45,10 @@ public class signIn extends AppCompatActivity {
 
 
     public void signIn(String email, String password) {
+        if(mAuth.getCurrentUser() != null)
+        {
+            mAuth.signOut();
+        }
         try {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

@@ -6,81 +6,88 @@
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
     app:cardCornerRadius="8dp"
+    android:background="@color/black"
     app:cardElevation="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/linearLayout3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView17"
-            app:layout_constraintVertical_bias="1.0">
-
-            <TextView
-                android:id="@+id/ingredients"
-                android:layout_width="200dp"
-                android:layout_height="149dp"
-                android:textSize="11sp"
-                android:background="@drawable/title_box_black"
-                android:text="@string/ingredients" />
-
-            <TextView
-                android:id="@+id/instructions"
-                android:layout_width="200dp"
-                android:textSize="11sp"
-                android:layout_height="149dp"
-                android:background="@drawable/title_box_black"
-                android:text="@string/instructions" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/textView17"
-            android:layout_width="75dp"
-            android:layout_height="20dp"
-            android:text="@string/instructions"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.22"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.464" />
+        android:background="@color/black"
+        android:layout_height="350dp">
 
         <TextView
             android:id="@+id/textView18"
-            android:layout_width="75dp"
+            android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:fontFamily="@font/bookman_os_bold"
             android:text="@string/ingredients"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.72"
             app:layout_constraintStart_toEndOf="@+id/textView17"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.464" />
+            app:layout_constraintVertical_bias="0.43" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:fontFamily="@font/bookman_os_bold"
+            android:text="@string/instructions"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.31"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.43" />
+
+        <LinearLayout
+            android:layout_width="376dp"
+            android:layout_height="180dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView17"
+            app:layout_constraintVertical_bias="0.29000002">
+
+            <TextView
+                android:id="@+id/instructions"
+                android:layout_width="250dp"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/bookman_os_bold"
+                android:foreground="@drawable/title_box_white"
+                android:text="@string/instructions"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/ingredients"
+                android:layout_width="125dp"
+                android:fontFamily="@font/bookman_os_bold"
+                android:layout_height="match_parent"
+                android:foreground="@drawable/title_box_white"
+                android:text="@string/ingredients"
+                android:textSize="11sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout3"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_width="379dp"
+            android:layout_height="408dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <ImageView
                 android:id="@+id/mealImg"
                 android:layout_width="152dp"
                 android:layout_height="130dp"
                 android:contentDescription="@string/app_name"
-                android:foreground="@drawable/title_box_black"
-                android:scaleType="centerInside"></ImageView>
+                android:foreground="@drawable/title_box_white"
+                android:scaleType="centerInside"/>
 
 
             <LinearLayout
@@ -96,6 +103,8 @@
                     <TextView
                         android:id="@+id/mealTitle"
                         android:layout_width="wrap_content"
+                        android:foreground="@drawable/title_box_white"
+                        android:fontFamily="@font/bookman_os_bold"
                         android:layout_height="wrap_content"
                         android:text="@string/meal_title">
 
@@ -105,6 +114,7 @@
                 <TextView
                     android:id="@+id/textView11"
                     android:layout_width="match_parent"
+                    android:fontFamily="@font/bookman_os_bold"
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
                     android:text="@string/description" />
@@ -117,11 +127,12 @@
                     <TextView
                         android:id="@+id/mealDescription"
                         android:layout_width="match_parent"
+                        android:fontFamily="@font/bookman_os_bold"
                         android:layout_height="match_parent"
-                        android:textSize="11sp"
-                        android:background="@drawable/title_box_black"
+                        android:foreground="@drawable/title_box_white"
                         android:paddingTop="1dp"
-                        android:text="@string/meal_description">
+                        android:text="@string/meal_description"
+                        android:textSize="11sp">
 
 
                     </TextView>

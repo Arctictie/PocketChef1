@@ -24,6 +24,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,6 +39,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -55,8 +62,10 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
     //private DocumentReference defaultMealsRef = db.document("defaultMeals/defaultlist/DefaultMeals");
 
     private DocumentReference userListNamesRef;
+    private DatabaseReference imageDatabaseRef;
     private FirebaseAuth mAuth;
     public static ArrayList<mealItem> mealArrayList = new ArrayList<mealItem>();
+    private static final String IMAGE_URL ="imageURl";
     private static final String KEY_MEAL_NAME ="meal_name";
     private static final String KEY_DESCRIPTION ="description";
     private String[] mealTitles;
@@ -67,6 +76,7 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
     private static RecyclerView recyclerView;
     public  AutoCompleteTextView textEdit;
     private CollectionReference mealsColRef;
+    private ArrayList<mealImage> mealImages = new ArrayList<mealImage>();
     public String UID;
     populateMealList listCallback;
     public View passedView;
@@ -103,8 +113,6 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
         userAuth = FirebaseAuth.getInstance().getCurrentUser();
         mealsColRef = db.collection("users/"+userAuth.getUid()+"/root/" +"userLists"+"/"+itemSelected);
         userListNamesRef = db.document("users/"+userAuth.getUid()+"/root/userListNames");
-
-
         callActivity = false;
 
         super.onCreate(savedInstanceState);
@@ -148,17 +156,11 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
         getLists();
         textEdit = requireView().findViewById(R.id.meal_search);
-        textEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getLists();
-            }
-        });
         passedSavedInstanceState =savedInstanceState;
         super.onViewCreated(view, savedInstanceState);
-
         passedView = view;
         if(textEdit != null) {
             textEdit.setAdapter(adapter);
@@ -168,35 +170,19 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
                     itemSelected = adapter.getItem(position);
 
                     System.out.println("item clicked"+itemSelected);
-                    initialiseMealData(new populateMealList() {
-                        @Override
-                        public void onCallback(ArrayList<mealItem> item) {
-                            updateRecyclerView();
+                    if(itemSelected != "list1") {
+                        initialiseMealData(new populateMealList() {
+                            @Override
+                            public void onCallback(ArrayList<mealItem> item) {
+                                updateRecyclerView();
 
-                        }
+                            }
+                        });
+                    }
 
-                    });
-                }
-            });
-
-
-        }
-        if(newMealViewAdapter == null) {
-            initialiseMealData(new populateMealList() {
-                @Override
-                public void onCallback(ArrayList<mealItem> item) {
-                    updateRecyclerView();
                 }
             });
         }
-
-        else
-        {
-
-        }
-
-
-
     }
 
 
@@ -211,7 +197,7 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
 
 
                  if(mealArrayList.size() != 0) {
-                     newMealViewAdapter = new mealViewAdapter(requireContext(), mealArrayList);
+                     newMealViewAdapter = new mealViewAdapter(requireContext(), mealArrayList,mealImages);
                      recyclerView.setAdapter(newMealViewAdapter);
                  }
                 textEdit.setText(itemSelected, false);
@@ -231,6 +217,7 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
 
     private void getLists()
     {
+
         mealListNames.clear();
         userListNamesRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -246,41 +233,81 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
                 }
 
                 textEdit.setText(itemSelected, false);
-                updateRecyclerView();
-                }
+                mealImages.clear();
+                mealArrayList.clear();
+                initialiseMealData(new populateMealList() {
+                    @Override
+                    public void onCallback(ArrayList<mealItem> item) {
+                        updateRecyclerView();
 
+                    }
+                });
+                }
         });
     }
     private void  initialiseMealData (final populateMealList listCallback ) {
+        mealImages.clear();
         System.out.println("Item SELECTED ="+ itemSelected);
+        mealImages = new ArrayList<>();
         mealsColRef = db.collection("users/"+userAuth.getUid()+"/root/" +"userLists"+"/"+itemSelected);
+        imageDatabaseRef = FirebaseDatabase.getInstance("https://pocketchef-b2697-default-rtdb.europe-west1.firebasedatabase.app").getReference("images/" + userAuth.getUid() + "/" + itemSelected );
+        imageDatabaseRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    mealImage mealImage = postSnapshot.getValue(mealImage.class);
+
+                    System.out.println(mealImage.getImageUrl());
+                    System.out.println(postSnapshot.getValue().toString());
+
+                    mealImages.add(mealImage);
+                }
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("viewMealFragment","issue getting image data");
+            }
+        });
         mealArrayList.clear();
                 mealsColRef.get()
                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                    mealItem dfMealItem = documentSnapshot.toObject(mealItem.class);
-                                    if(dfMealItem.getIngredients() != null) {
-                                        mealArrayList.add(dfMealItem);
-                                    }
-                                    System.out.println(dfMealItem.getMeal_name());
-                                    // Log.d(TAG, "meal item : ",dfMealItem.getMealTitle());
+                                                  @Override
+                                                  public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
+                                                      for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                                          mealItem dfMealItem = documentSnapshot.toObject(mealItem.class);
+                                                          if (dfMealItem.getIngredients() != null) {
+                                                              mealArrayList.add(dfMealItem);
+                                                          }
+                                                          System.out.println(dfMealItem.getMeal_name());
+                                                          // Log.d(TAG, "meal item : ",dfMealItem.getMealTitle());
 
-                                }
-                                listCallback.onCallback(mealArrayList);
-                                System.out.println(mealArrayList.size());
+                                                          }
 
 
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, "could not initialise data ");
-                            }
-                        });
+
+
+                                                      listCallback.onCallback(mealArrayList);
+                                                      System.out.println(mealArrayList.size());
+                                                  }
+                                              });
+
 
         listCallback.onCallback(mealArrayList);
     }
@@ -299,8 +326,6 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
           super.onResume();
           Log.i("viewMealFragment","Fragment resumed");
           System.out.println(itemSelected);
-
-
 
       }
       @Override
@@ -328,7 +353,9 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
         }
 
     }
-  }
+
+}
+
 
 
 

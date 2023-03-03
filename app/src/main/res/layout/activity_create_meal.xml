@@ -15,12 +15,14 @@
         android:layout_height="50dp"
 
 
-        android:layout_margin="16dp"
         android:hint="@string/select_list"
         android:outlineSpotShadowColor="@color/blue2"
+        app:layout_constraintBottom_toTopOf="@+id/createMealDescription"
         app:layout_constraintEnd_toStartOf="@+id/mealImage"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createMealTitle">
+        app:layout_constraintTop_toBottomOf="@+id/createMealTitle"
+        app:layout_constraintVertical_bias="0.26">
 
         <AutoCompleteTextView
             android:id="@+id/cm_meal_search"
@@ -33,21 +35,9 @@
             app:simpleItemSelectedRippleColor="#072554" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/button7"
-        android:layout_width="42dp"
-        android:layout_height="34dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/ic_baseline_arrow_back_24"
-        app:layout_constraintEnd_toStartOf="@+id/textView3"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <EditText
         android:id="@+id/createMealDescription"
-        android:layout_width="395dp"
+        android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_marginTop="180dp"
         android:layout_marginBottom="50dp"
@@ -58,7 +48,6 @@
         android:inputType="textMultiLine"
         android:padding="5dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.888" />
@@ -85,7 +74,7 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toStartOf="@+id/tvIngredients"
-        app:layout_constraintHorizontal_bias="0.634"
+        app:layout_constraintHorizontal_bias="0.45"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
@@ -100,17 +89,15 @@
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/createMealTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.23"
+        app:layout_constraintHorizontal_bias="0.24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.625" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/createMealTitle"
-        android:layout_width="182dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="90dp"
+        android:layout_width="218dp"
+        android:layout_height="39dp"
         android:background="@drawable/border_shape"
         android:ems="10"
         android:gravity="top"
@@ -120,10 +107,10 @@
         android:paddingTop="0px"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.063" />
+        app:layout_constraintVertical_bias="0.050000012" />
 
     <TextView
         android:id="@+id/tvIngredients"
@@ -140,13 +127,15 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="400dp"
         android:layout_marginBottom="100dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
@@ -165,7 +154,7 @@
 
         <EditText
             android:id="@+id/createMealIngredients"
-            android:layout_width="150dp"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
             android:background="@drawable/border_shape"
             android:ems="10"
@@ -215,18 +204,19 @@
 
     <Button
         android:id="@+id/createList"
-        android:layout_width="59dp"
+        android:layout_width="60dp"
         android:layout_height="36dp"
 
         android:text="@string/add"
         android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/createMealDescription"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.022"
+        app:layout_constraintHorizontal_bias="0.05"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cm_text_search"
-        app:layout_constraintVertical_bias="0.266" />
+        app:layout_constraintVertical_bias="0.19" />
 
     <Button
         android:id="@+id/removeList"
@@ -238,9 +228,25 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/createMealDescription"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.225"
+        app:layout_constraintHorizontal_bias="0.36"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cm_text_search"
-        app:layout_constraintVertical_bias="0.266" />
+        app:layout_constraintVertical_bias="0.19" />
+
+    <ImageButton
+        android:id="@+id/cmBack"
+        android:layout_width="50dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="47dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/createCompletedMealBtn"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintVertical_bias="0.525"
+        app:srcCompat="@mipmap/backbutton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

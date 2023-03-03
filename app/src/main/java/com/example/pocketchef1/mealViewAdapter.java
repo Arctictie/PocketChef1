@@ -10,15 +10,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class mealViewAdapter extends RecyclerView.Adapter<mealViewAdapter.mealViewHolder> {
      Context context;
     ArrayList<mealItem> mealsList;
+    ArrayList<mealImage> mealImages;
 
-    public mealViewAdapter(Context context, ArrayList<mealItem> mealsList) {
+    public mealViewAdapter(Context context, ArrayList<mealItem> mealsList,ArrayList<mealImage> mealImages) {
         this.context = context;
         this.mealsList = mealsList;
+        this.mealImages = mealImages;
     }
 
     @NonNull
@@ -31,11 +36,24 @@ public class mealViewAdapter extends RecyclerView.Adapter<mealViewAdapter.mealVi
     @Override
     public void onBindViewHolder(@NonNull mealViewHolder holder, int position) {
         mealItem mealitem = mealsList.get(position);
+       int newPos =  position -1;
+       String imageName;
+        for(int i =0; i< mealImages.size(); i++) {
+            mealImage mealimage = mealImages.get(i);
+            if (Objects.equals(mealitem.getMeal_name(), mealimage.getMealName())) {
+                Picasso.with(context)
+                        .load(mealimage.getImageUrl())
+                        .fit()
+                        .centerCrop()
+                        .into(holder.mealImage);
+            }
+        }
 
         holder.mealTitle.setText(mealitem.getMeal_name());
         holder.mealDescription.setText(mealitem.getDescription());
         holder.instructions.setText((mealitem.getInstructions()));
         holder.ingredients.setText((mealitem.getIngredients()));
+
     }
 
     @Override

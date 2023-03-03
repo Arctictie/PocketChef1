@@ -38,4 +38,17 @@
     <string name="add_image">Add Image</string>
     <string name="add">+</string>
     <string name="remove">-</string>
+    <string name="calendar_forward">Calendar Forward</string>
+    <string name="calendar_back">Calendar back</string>
+    <string name="saturday">Sat</string>
+    <string name="sunday">Sun</string>
+    <string name="friday">Fri</string>
+    <string name="thursday">Thu</string>
+    <string name="wednesday">Wed</string>
+    <string name="tuesday">Tue</string>
+    <string name="monday">Mon</string>
+    <string name="currentdate">currentDate</string>
+    <string name="day">day</string>
+    <string name="mealitem">mealItem</string>
+    <string name="add_meal_to_date">Add Meal to Date</string>
 </resources>
