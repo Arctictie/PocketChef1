@@ -3,20 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
+    android:background="@drawable/title_box_white"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInput"
-
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+        android:id="@+id/calListView"
         android:layout_width="wrap_content"
-
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:hint="@string/select_list"
-        android:textColor="@color/blue2"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,27 +23,31 @@
         app:layout_constraintVertical_bias="0.050000012">
 
         <AutoCompleteTextView
-            android:id="@+id/meal_search"
+            android:id="@+id/calTextInput"
             android:layout_width="300dp"
             android:layout_height="50dp"
+            android:editable="false"
+            android:inputType="textNoSuggestions"
             android:completionThreshold="1"
-            android:shadowColor="@color/blue2"
-            android:textColor="@color/blue2" />
+            android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ListView
         android:id="@+id/calenderMealList"
         android:layout_width="match_parent"
         android:layout_height="413dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageButton2"
+        android:choiceMode="singleChoice"
+        app:layout_constraintBottom_toTopOf="@+id/calAddMeal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInput" />
+        app:layout_constraintTop_toBottomOf="@+id/calListView" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/calAddMeal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/add_meal"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_meal_to_date"
-        app:layout_constraintBottom_toTopOf="@+id/textInput"
+        app:layout_constraintBottom_toTopOf="@+id/calListView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

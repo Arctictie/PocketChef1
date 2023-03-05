@@ -7,7 +7,7 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/blue2</item>
         <item name="colorPrimaryVariant">@color/blue2</item>
-        <item name="colorOnPrimary">@color/whiteGreen</item>
+        <item name="colorOnPrimary">@color/blue2</item>
         <!-- Secondary brand color. -->
 
         <item name="colorSecondary">@color/whiteGreen</item>
@@ -16,11 +16,11 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item parent="Widget.Material3.TextInputLayout.OutlinedBox.Dense" name="boxStrokeColor">@color/blue2</item>
+        <item parent="Widget.Material3.TextInputLayout.OutlinedBox.Dense" name="boxStrokeColor">@color/white</item>
     </style>
 
     <style parent="Theme.Material3.DayNight.NoActionBar" name="mainAlternative">
-        <item name="colorPrimary">@color/blue2</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/white</item>
     </style>
     -<style name="Theme.pocketchef1.NoActionBar">

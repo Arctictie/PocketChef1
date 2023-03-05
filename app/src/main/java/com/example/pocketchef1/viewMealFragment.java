@@ -20,7 +20,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,7 +28,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -39,8 +37,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -78,7 +74,7 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
     private CollectionReference mealsColRef;
     private ArrayList<mealImage> mealImages = new ArrayList<mealImage>();
     public String UID;
-    populateMealList listCallback;
+    private populateMealList listCallback;
     public View passedView;
     public static  mealViewAdapter newMealViewAdapter;
     public static Bundle passedSavedInstanceState;
@@ -158,7 +154,7 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         getLists();
-        textEdit = requireView().findViewById(R.id.meal_search);
+        textEdit = requireView().findViewById(R.id.calTextInput1);
         passedSavedInstanceState =savedInstanceState;
         super.onViewCreated(view, savedInstanceState);
         passedView = view;
@@ -217,6 +213,39 @@ public class viewMealFragment extends Fragment  implements View.OnClickListener 
 
     private void getLists()
     {
+        imageDatabaseRef = FirebaseDatabase.getInstance("https://pocketchef-b2697-default-rtdb.europe-west1.firebasedatabase.app").getReference("images/" + userAuth.getUid() + "/" + itemSelected );
+        imageDatabaseRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    mealImage mealImage = postSnapshot.getValue(mealImage.class);
+
+                    System.out.println(mealImage.getImageUrl());
+                    System.out.println(postSnapshot.getValue().toString());
+
+                    mealImages.add(mealImage);
+                }
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("viewMealFragment","issue getting image data");
+            }
+        });
 
         mealListNames.clear();
         userListNamesRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

@@ -51,4 +51,5 @@
     <string name="day">day</string>
     <string name="mealitem">mealItem</string>
     <string name="add_meal_to_date">Add Meal to Date</string>
+    <string name="add_meal">Add meal</string>
 </resources>

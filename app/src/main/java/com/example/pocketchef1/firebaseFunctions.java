@@ -25,6 +25,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -39,6 +40,7 @@ public class firebaseFunctions {
     String UID;
     public String tempMealItem;
     DocumentReference userListNamesRef;
+    CollectionReference userList;
     private StorageReference storageref;
     private DatabaseReference imageDatabaseRef;
     public static ArrayList<mealItem> mealArrayList;
@@ -217,6 +219,35 @@ public class firebaseFunctions {
         //   });
 
         return listNamesObjRet;
+    }
+    public void saveCalendarItem(calendarItem calendarItem)
+    {
+
+    }
+    public List getMealNames(String mealListName)
+    {
+        List<String> mealNames = new ArrayList<>();
+        this.mealListName = mealListName;
+        userList = db.collection("users/" + userAuth.getUid() + "/root/userLists/" + mealListName);
+        userList.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots)
+                        {
+                            mealNames.add( documentSnapshot.getId());
+                        }
+                    }
+
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+        return mealNames;
+
     }
 
     public void generateBaseMeals() {

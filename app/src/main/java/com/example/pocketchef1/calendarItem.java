@@ -1,7 +1,7 @@
 package com.example.pocketchef1;
 
 public class calendarItem {
-    private String mealName, mealDescription,date,month,year;
+    private String mealName,date,month,year;
 
     public calendarItem() {
         //needed for firebase
@@ -13,14 +13,6 @@ public class calendarItem {
 
     public void setMealName(String mealName) {
         this.mealName = mealName;
-    }
-
-    public String getMealDescription() {
-        return mealDescription;
-    }
-
-    public void setMealDescription(String mealDescription) {
-        this.mealDescription = mealDescription;
     }
 
     public String getDate() {
@@ -47,9 +39,8 @@ public class calendarItem {
         this.year = year;
     }
 
-    public calendarItem(String mealName, String mealDescription, String date, String month, String year) {
+    public calendarItem(String mealName,String date, String month, String year) {
         this.mealName = mealName;
-        this.mealDescription = mealDescription;
         this.date = date;
         this.month = month;
         this.year = year;
